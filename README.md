@@ -48,6 +48,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## Note
 
 You are required to keep attribution notices to the original author intact.
-
-## What's coming next?
-
