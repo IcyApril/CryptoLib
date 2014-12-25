@@ -2,16 +2,16 @@
 
 ## Version log
 
-    - v0.8 Christmas - Initial version, released on Christmas day 2014.
+- v0.8 Christmas - Initial version, released on Christmas day 2014.
 
 CryptoLib: secure, free & open-source PHP cryptography library for everyone. It makes it easy for those who would usually
 implement incredibly weak cryptography to include secure cryptographic functions to secure passwords, data and generate
 secure random data.
 
 CryptoLib boasts:
-    - Secure pseudorandom number/hex/string generator with repeatability checker
-    - Salted PBKDF2 hashing using alternations between SHA512 and Whirlpool
-    - Two-way cascading encryption using Rijndael 256, Twofish and Serpent
+- Secure pseudorandom number/hex/string generator with repeatability checker
+- Salted PBKDF2 hashing using alternations between SHA512 and Whirlpool
+- Two-way cascading encryption using Rijndael 256, Twofish and Serpent
 
 CryptoLib requires PHP 5.3.0+ (with OpenSSL and MCrypt version 2.4.x or greater). You should always keep your Cryptography plugins
 up-to-date.
