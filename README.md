@@ -1,5 +1,7 @@
 #CryptoLib v0.8 Christmas
 
+"We have technology but lack philosophy"; this saying holds true in the world of cryptography when merged with PHP. As a software engineer, working with PHP day-in day-out; it is apparent that unskilled developers still implement cryptographic function unsafely in PHP. Whether it is people hashing passwords without salts, weak random number generation or even encryption systems using weak ciphers. Yes, some may hold the view that PHP Developers are not best equipped for this issue, which is why I built CryptoLib. CryptoLib provides cryptographic functions with a degree of security that is exceptional and unique for any single library to be called with just a single line of simple code. CryptoLib exists to make it easy for people to ensure their cryptographic functions in PHP, for example hashing passwords to store them in a database, hold a reasonable degree of cryptographic safety. This class makes this technology accessible to all, whether developers will lift their heads out of the darkness and take advantage of it is another matter. 
+
 ## Version log
 
 - v0.8 Christmas - Initial version, released on Christmas day 2014.
