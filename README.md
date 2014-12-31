@@ -21,6 +21,7 @@ Check out the documentation at: http://cryptolib.ju.je
 ## Version log
 
 - v0.8 Christmas - Initial version, released on Christmas day 2014.
+- v0.9 Converging - Documentation updates, released 28th December 2014.
 
 ## Warning
 
