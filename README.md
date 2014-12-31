@@ -1,4 +1,4 @@
-#CryptoLib v0.8 Christmas
+#CryptoLib v0.9 Christmas
 
 CryptoLib: secure, free & open-source PHP cryptography library for everyone. It makes it easy for those who would usually
 implement incredibly weak cryptography to include secure cryptographic functions to secure passwords, data and generate
