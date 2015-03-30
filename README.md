@@ -9,7 +9,7 @@ CryptoLib boasts:
 - Salted PBKDF2 hashing using alternations between SHA512 and Whirlpool
 - Two-way cascading encryption using Rijndael 256, Twofish and Serpent
 
-CryptoLib requires PHP 5.3.0+ (with OpenSSL and MCrypt version 2.4.x or greater). You should always keep your Cryptography plugins
+CryptoLib requires PHP 5.5.0+ (with OpenSSL and MCrypt version 2.4.x or greater). You should always keep your Cryptography plugins
 up-to-date.
 
 Check out the documentation at: http://cryptolib.ju.je
