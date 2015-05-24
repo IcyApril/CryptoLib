@@ -1,4 +1,5 @@
 <?php
+namespace IcyApril;
 /**
  * Class CryptoLib (v0.8 Christmas)
  * Created by Junade Ali
@@ -38,7 +39,7 @@ class CryptoLib {
      * @returns int $bytes
      */
     private static function pseudoBytes ($length = 1) {
-        $bytes = openssl_random_pseudo_bytes($length, $strong);
+        $bytes = \openssl_random_pseudo_bytes($length, $strong);
 
         if ($strong === TRUE) {
             return $bytes;
@@ -55,14 +56,9 @@ class CryptoLib {
      */
     public static function randomHex ($length = 128) {
 
-        $bytes = ceil($length/2);
-        $hex = bin2hex(self::pseudoBytes($bytes));
-
-        //$string = ($length & 1 ? substr($hex, 0, $length) : $hex);
+        $bytes = \ceil($length/2);
+        $hex = \bin2hex(self::pseudoBytes($bytes));
         return $hex;
-
-        return $string;
-
     }
 
     /**
@@ -84,11 +80,11 @@ class CryptoLib {
 
         $difference = $max - $min;
 
-        for ($power = 8; pow(2, $power) < $difference; $power = $power*2);
+        for ($power = 8; \pow(2, $power) < $difference; $power = $power*2);
         $powerExp = $power/8;
 
         do {
-            $randDiff = hexdec(bin2hex(self::pseudoBytes($powerExp)));
+            $randDiff = \hexdec(\bin2hex(self::pseudoBytes($powerExp)));
         } while
         ($randDiff > $difference);
 
@@ -104,16 +100,16 @@ class CryptoLib {
      */
     public static function randomString ($length) {
 
-        $charactersArr = array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9'));
+        $charactersArr = \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0', '9'));
 
-        $charactersCount = count($charactersArr);
+        $charactersCount = \count($charactersArr);
         $stringArr = array();
 
         for ($character = 0; $character !== $length; $character++) {
             $stringArr[$character] = $charactersArr[self::randomInt(0, $charactersCount-1)];
         }
 
-        return implode($stringArr);
+        return \implode($stringArr);
 
     }
 
@@ -126,7 +122,7 @@ class CryptoLib {
      */
     public static function checkRandomNumberRepeatability ($function = NULL, $numbers = 5, $checks = 1000) {
 
-        if (!is_callable($function)) {
+        if (!\is_callable($function)) {
             $function = function($min, $max) {
                 return self::randomInt($min, $max);
             };
@@ -171,17 +167,16 @@ class CryptoLib {
      */
     public static function hash ($data, $salt = NULL, $raw_output = FALSE, $iterations = 96) {
 
-        if (empty($salt) || is_null($salt)) {
+        if (empty($salt) || \is_null($salt)) {
             $salt = self::generateSalt();
-            //throw new Exception ('Please provide a salt to hash a string! (Random data to prevent against dictionary attacks, i.e. a user ID))');
         }
 
-        if ((in_array("whirlpool", hash_algos()) && in_array("sha512", hash_algos())) !== TRUE) {
+        if ((\in_array("whirlpool", \hash_algos()) && \in_array("sha512", \hash_algos())) !== TRUE) {
             throw new Exception ('Your PHP installation does not support Whirlpool or SHA512 hashing.');
         }
 
-        $outerIterations = ceil(($iterations/3)*2);
-        $pbkdf2Iteration = ceil($iterations/3);
+        $outerIterations = \ceil(($iterations/3)*2);
+        $pbkdf2Iteration = \ceil($iterations/3);
 
         $hashed = $data;
 
@@ -190,7 +185,7 @@ class CryptoLib {
         $peppered = $hashed.self::$pepper;
         while ($iteration <= $outerIterations) {
 
-            $hashed = hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0, $raw_output);
+            $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0, $raw_output);
 
             if ($algorithm == "whirlpool") {
                 $algorithm = "sha512";
@@ -217,12 +212,12 @@ class CryptoLib {
      */
     public static function validateHash ($original, $input) {
 
-        $originalExploded = explode('_', $original);
+        $originalExploded = \explode('_', $original);
 
         $salt = $originalExploded[0];
         $hash = $originalExploded[1];
 
-        $rehashed = explode('_', self::hash($input, $salt));
+        $rehashed = \explode('_', self::hash($input, $salt));
 
         if ($hash === $rehashed[1]) {
             return TRUE;
@@ -239,7 +234,7 @@ class CryptoLib {
      */
     protected static function checkMCrypt () {
         foreach (self::$mcryptCiphers as $cipher) {
-            $ivSize = mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
+            $ivSize = \mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
             if (!($ivSize % 16) && !($ivSize > 0)) {
                 throw new Exception ('Your MCrypt version is too old and does not support the Rijndael, Serpant or Twofish ciphers (or the MCrypt ciphers have been changed).');
             }
@@ -262,12 +257,12 @@ class CryptoLib {
 
         foreach (self::$mcryptCiphers as $cipher) {
 
-            $ivSize = mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
-            $iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);
+            $ivSize = \mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
+            $iv = \mcrypt_create_iv($ivSize, MCRYPT_RAND);
             $key = self::hash($key, $salt);
-            $key = hash('SHA256', $key, true);
-            $cipherText = mcrypt_encrypt($cipher, $key, $data, MCRYPT_MODE_CBC, $iv);
-            $data = base64_encode($iv)."_".base64_encode($cipherText);
+            $key = \hash('SHA256', $key, true);
+            $cipherText = \mcrypt_encrypt($cipher, $key, $data, MCRYPT_MODE_CBC, $iv);
+            $data = \base64_encode($iv)."_".\base64_encode($cipherText);
 
         }
 
@@ -288,13 +283,13 @@ class CryptoLib {
 
         self::checkMCrypt();
 
-        $cipherCount = count(self::$mcryptCiphers);
-        $explodedData = explode('_', $data);
+        $cipherCount = \count(self::$mcryptCiphers);
+        $explodedData = \explode('_', $data);
 
         $salt = $explodedData[0];
-        array_shift($explodedData);
+        \array_shift($explodedData);
 
-        $data = implode('_', $explodedData);
+        $data = \implode('_', $explodedData);
         unset($explodedData);
 
         $hashes = array();
@@ -302,25 +297,25 @@ class CryptoLib {
         for($hash = 1; $hash <= $cipherCount; $hash++) {
 
             $key = self::hash($key, $salt);
-            $key = hash('SHA256', $key, true);
-            array_unshift($hashes, $key);
+            $key = \hash('SHA256', $key, true);
+            \array_unshift($hashes, $key);
 
         }
 
-        $mcryptCiphersInverted = array_reverse(self::$mcryptCiphers);
+        $mcryptCiphersInverted = \array_reverse(self::$mcryptCiphers);
 
         foreach ($mcryptCiphersInverted as $num => $cipher) {
 
-            $explodedData = explode('_', $data);
+            $explodedData = \explode('_', $data);
             $data = $explodedData[1];
-            $data = mcrypt_decrypt($cipher, $hashes[$num], base64_decode($explodedData[1]), MCRYPT_MODE_CBC, base64_decode($explodedData[0]));
-            $data = rtrim($data, "\0");
+            $data = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), MCRYPT_MODE_CBC, \base64_decode($explodedData[0]));
+            $data = \rtrim($data, "\0");
 
             unset($explodedData);
 
         }
 
-        if ((isset($data)) && (strlen($data) > 0)) {
+        if ((isset($data)) && (\strlen($data) > 0)) {
             return $data;
         } else {
             throw new Exception('Decryption failed (likely incorrect password).');
