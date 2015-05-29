@@ -30,7 +30,7 @@ class CryptoLib {
     private static $pepper = '+?*er*F+AY%vJ,tmwt$e[AzIy|(}(;W7]-Gw}Nazr}iD}--vA}+Jq%+$LCPsP#J#';
 
     // Ciphers used, in order of use, if you change this after encryption you will not be able to decrypt, they must support MCRYPT_MODE_CBC:
-    public static $mcryptCiphers = array(MCRYPT_SERPENT, MCRYPT_TWOFISH, MCRYPT_RIJNDAEL_256);
+    public static $mcryptCiphers = array(\MCRYPT_SERPENT, \MCRYPT_TWOFISH, \MCRYPT_RIJNDAEL_256);
 
     /**
      * Will return openssl_random_pseudo_bytes with desired length is $strong is set to true.
@@ -234,7 +234,7 @@ class CryptoLib {
      */
     protected static function checkMCrypt () {
         foreach (self::$mcryptCiphers as $cipher) {
-            $ivSize = \mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
+            $ivSize = \mcrypt_get_iv_size($cipher, \MCRYPT_MODE_CBC);
             if (!($ivSize % 16) && !($ivSize > 0)) {
                 throw new Exception ('Your MCrypt version is too old and does not support the Rijndael, Serpant or Twofish ciphers (or the MCrypt ciphers have been changed).');
             }
@@ -257,11 +257,11 @@ class CryptoLib {
 
         foreach (self::$mcryptCiphers as $cipher) {
 
-            $ivSize = \mcrypt_get_iv_size($cipher, MCRYPT_MODE_CBC);
-            $iv = \mcrypt_create_iv($ivSize, MCRYPT_RAND);
+            $ivSize = \mcrypt_get_iv_size($cipher, \MCRYPT_MODE_CBC);
+            $iv = \mcrypt_create_iv($ivSize, \MCRYPT_RAND);
             $key = self::hash($key, $salt);
             $key = \hash('SHA256', $key, true);
-            $cipherText = \mcrypt_encrypt($cipher, $key, $data, MCRYPT_MODE_CBC, $iv);
+            $cipherText = \mcrypt_encrypt($cipher, $key, $data, \MCRYPT_MODE_CBC, $iv);
             $data = \base64_encode($iv)."_".\base64_encode($cipherText);
 
         }
@@ -308,7 +308,7 @@ class CryptoLib {
 
             $explodedData = \explode('_', $data);
             $data = $explodedData[1];
-            $data = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), MCRYPT_MODE_CBC, \base64_decode($explodedData[0]));
+            $data = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), \MCRYPT_MODE_CBC, \base64_decode($explodedData[0]));
             $data = \rtrim($data, "\0");
 
             unset($explodedData);
