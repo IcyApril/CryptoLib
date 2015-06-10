@@ -26,13 +26,15 @@
 /**
  * Start off my requiring the library in our demo script.
  */
-require_once('cryptolib.php');
+require_once('../src/CryptoLib.php');
 
 /**
  * Some nice debugging messages.
  */
 ini_set('display_errors',1);
 ini_set('display_startup_errors',1);
+
+use IcyApril\CryptoLib;
 
 /**
  * Standard procedural testers.
