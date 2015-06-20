@@ -32,10 +32,19 @@ class CryptoLib {
     // Ciphers used, in order of use, if you change this after encryption you will not be able to decrypt, they must support MCRYPT_MODE_CBC:
     public static $mcryptCiphers = array(\MCRYPT_SERPENT, \MCRYPT_TWOFISH, \MCRYPT_RIJNDAEL_256);
 
+    public function changePepper ($new) {
+
+        if ((empty($new)) || (!is_string($new))) {
+            throw new \Exception("You must set a pepper and it cannot change the pepper to something that isn't a string.");
+        }
+
+        self::$pepper = $new;
+    }
+
     /**
      * Will return openssl_random_pseudo_bytes with desired length is $strong is set to true.
      * @param int $length
-     * @throws Exception
+     * @throws \Exception
      * @returns int $bytes
      */
     private static function pseudoBytes ($length = 1) {
@@ -44,7 +53,7 @@ class CryptoLib {
         if ($strong === TRUE) {
             return $bytes;
         } else {
-            throw new Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
+            throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
         }
     }
 
@@ -52,7 +61,7 @@ class CryptoLib {
      * Random hex generator using pseudoBytes function in this class.
      * @param int $length
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public static function randomHex ($length = 128) {
 
@@ -66,16 +75,16 @@ class CryptoLib {
      * @param $min
      * @param $max
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     public static function randomInt ($min, $max) {
 
         if ($max <= $min) {
-            throw new Exception('Minimum equal or greater than maximum!');
+            throw new \Exception('Minimum equal or greater than maximum!');
         }
 
         if ($max < 0 || $min < 0) {
-            throw new Exception('Only positive integers supported for now!');
+            throw new \Exception('Only positive integers supported for now!');
         }
 
         $difference = $max - $min;
@@ -96,7 +105,7 @@ class CryptoLib {
      * Random string generator using randomInt function in this class.
      * @param $length
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public static function randomString ($length) {
 
@@ -145,6 +154,8 @@ class CryptoLib {
 
         }
 
+        throw new \Exception("You must provide an executable anonymous function as the first argument of the function.");
+
     }
 
 
@@ -163,7 +174,7 @@ class CryptoLib {
      * @param bool $raw_output
      * @param int $iterations - Recommended to leave at the default of 96, ensure it is divisible by 3 (to get a precise amount of iterations).
      * @return mixed
-     * @throws Exception
+     * @throws \Exception
      */
     public static function hash ($data, $salt = NULL, $raw_output = FALSE, $iterations = 96) {
 
@@ -172,7 +183,7 @@ class CryptoLib {
         }
 
         if ((\in_array("whirlpool", \hash_algos()) && \in_array("sha512", \hash_algos())) !== TRUE) {
-            throw new Exception ('Your PHP installation does not support Whirlpool or SHA512 hashing.');
+            throw new \Exception ('Your PHP installation does not support Whirlpool or SHA512 hashing.');
         }
 
         $outerIterations = \ceil(($iterations/3)*2);
@@ -196,7 +207,7 @@ class CryptoLib {
         }
 
         if (($data === $hashed) || ($data === $data.self::$pepper)) {
-            throw new Exception ('Hash failed.');
+            throw new \Exception ('Hash failed.');
         } else {
             return $salt.'_'.$hashed;
         }
@@ -208,7 +219,7 @@ class CryptoLib {
      * @param $input
      * @param $salt
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public static function validateHash ($original, $input) {
 
@@ -230,13 +241,13 @@ class CryptoLib {
     /**
      * Check MCrypt supports the specified ciphers.
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     protected static function checkMCrypt () {
         foreach (self::$mcryptCiphers as $cipher) {
             $ivSize = \mcrypt_get_iv_size($cipher, \MCRYPT_MODE_CBC);
             if (!($ivSize % 16) && !($ivSize > 0)) {
-                throw new Exception ('Your MCrypt version is too old and does not support the Rijndael, Serpant or Twofish ciphers (or the MCrypt ciphers have been changed).');
+                throw new \Exception ('Your MCrypt version is too old and does not support the Rijndael, Serpant or Twofish ciphers (or the MCrypt ciphers have been changed).');
             }
         }
         return TRUE;
@@ -247,7 +258,7 @@ class CryptoLib {
      * @param $data
      * @param $key
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public static function encryptData ($data, $key) {
 
@@ -277,7 +288,7 @@ class CryptoLib {
      * @param $data
      * @param $key
      * @return string
-     * @throws Exception
+     * @throws \Exception
      */
     public static function decryptData ($data, $key) {
 
@@ -307,7 +318,6 @@ class CryptoLib {
         foreach ($mcryptCiphersInverted as $num => $cipher) {
 
             $explodedData = \explode('_', $data);
-            $data = $explodedData[1];
             $data = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), \MCRYPT_MODE_CBC, \base64_decode($explodedData[0]));
             $data = \rtrim($data, "\0");
 
@@ -318,7 +328,7 @@ class CryptoLib {
         if ((isset($data)) && (\strlen($data) > 0)) {
             return $data;
         } else {
-            throw new Exception('Decryption failed (likely incorrect password).');
+            throw new \Exception('Decryption failed (likely incorrect password).');
         }
 
     }
