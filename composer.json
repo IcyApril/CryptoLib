@@ -1,0 +1,17 @@
+{
+  "name": "icyapril/cryptolib",
+  "description": "CryptoLib: secure, free & open-source PHP cryptography library for everyone.",
+  "minimum-stability": "beta",
+  "license": "AGPL",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "IcyApril\\" : "src/"
+    }
+  }
+}
