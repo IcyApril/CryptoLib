@@ -55,7 +55,7 @@ class CryptoLib
     private static function pseudoBytes($length = 1)
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
-        
+
         if ($strong === true) {
             return $bytes;
         }
@@ -202,13 +202,13 @@ class CryptoLib
      *
      * @param $data
      * @param $salt
-     * @param bool $raw_output
+     * @param bool $rawOutput
      * @param int $iterations - Recommended to leave at the default of 96, ensure it is divisible by 3 (to get a precise amount of iterations).
      *
      * @return mixed
      * @throws \Exception
      */
-    public static function hash($data, $salt = null, $raw_output = false, $iterations = 96)
+    public static function hash($data, $salt = null, $rawOutput = false, $iterations = 96)
     {
 
         if (empty($salt) || \is_null($salt)) {
@@ -229,7 +229,7 @@ class CryptoLib
         $peppered  = $hashed . self::$pepper;
         while ($iteration <= $outerIterations) {
 
-            $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0, $raw_output);
+            $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0, $rawOutput);
 
             if ($algorithm == "whirlpool") {
                 $algorithm = "sha512";
@@ -241,9 +241,10 @@ class CryptoLib
 
         if (($data === $hashed) || ($data === $data . self::$pepper)) {
             throw new \Exception ('Hash failed.');
-        } else {
-            return $salt . '_' . $hashed;
         }
+
+        return $salt . '_' . $hashed;
+
     }
 
     /**
@@ -271,9 +272,9 @@ class CryptoLib
 
         if ($hash === $rehashed[1]) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
 
     }
 
@@ -366,9 +367,9 @@ class CryptoLib
 
         }
 
-        $mcryptCiphersInverted = \array_reverse(self::$mcryptCiphers);
+        $mcryptCiphersInv = \array_reverse(self::$mcryptCiphers);
 
-        foreach ($mcryptCiphersInverted as $num => $cipher) {
+        foreach ($mcryptCiphersInv as $num => $cipher) {
 
             $explodedData = \explode('_', $data);
             $data         = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), \MCRYPT_MODE_CBC,
@@ -381,9 +382,10 @@ class CryptoLib
 
         if ((isset($data)) && (\strlen($data) > 0)) {
             return $data;
-        } else {
-            throw new \Exception('Decryption failed (likely incorrect password).');
         }
+
+        throw new \Exception('Decryption failed (likely incorrect password).');
+
 
     }
 
