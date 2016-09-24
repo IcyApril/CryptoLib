@@ -59,7 +59,7 @@ class CryptoLib
         if ($strong === true) {
             return $bytes;
         }
-
+        
         throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
     }
 
@@ -230,11 +230,8 @@ class CryptoLib
 
             $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0);
 
-            if ($algorithm == "whirlpool") {
-                $algorithm = "sha512";
-            } else {
-                $algorithm = "whirlpool";
-            }
+            $algorithm = self::flipHashAlgo($algorithm);
+
             $iteration++;
         }
 
@@ -243,6 +240,16 @@ class CryptoLib
         }
 
         return $salt . '_' . $hashed;
+
+    }
+
+    private static function flipHashAlgo($algorithm)
+    {
+        if ($algorithm == "whirlpool") {
+            return "sha512";
+        }
+
+        return "whirlpool";
 
     }
 
