@@ -55,7 +55,7 @@ class CryptoLib
     private static function pseudoBytes($length = 1)
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
-
+        
         if ($strong === true) {
             return $bytes;
         }
@@ -125,6 +125,10 @@ class CryptoLib
      */
     public static function randomString($length)
     {
+        if ($length < 1) {
+            throw new \Exception("String length must be a positive integer.");
+        }
+
 
         $charactersArr = \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0', '9'));
 
@@ -152,32 +156,35 @@ class CryptoLib
      */
     public static function checkRandomNumberRepeatability($function = null, $numbers = 5, $checks = 1000)
     {
+        if ($numbers <= 1) {
+            throw new \Exception("Numbers argument is too low.");
+        }
 
-        if ( ! \is_callable($function)) {
+        if ($checks <= 1) {
+            throw new \Exception("Checks argument is too low.");
+        }
+
+        if ( ! \is_callable($function) === true) {
             $function = function ($min, $max) {
                 return self::randomInt($min, $max);
             };
+        }
 
-            $repeats = 0;
+        $repeats = 0;
 
-            for ($check = 0; $check !== $numbers; $check++) {
+        for ($check = 0; $check !== $numbers; $check++) {
 
-                $$check = $function(0, $checks);
+            $$check = $function(0, $checks);
 
-                for ($repeat = 0; $repeat !== $checks; $repeat++) {
-                    if ($$check === $function(0, $checks)) {
-                        $repeats++;
-                    }
+            for ($repeat = 0; $repeat !== $checks; $repeat++) {
+                if ($$check === $function(0, $checks)) {
+                    $repeats++;
                 }
-
             }
-
-            return $repeats / ($checks * $numbers);
 
         }
 
-        throw new \Exception("You must provide an executable anonymous function as the first argument of the function.");
-
+        return $repeats / ($checks * $numbers);
     }
 
 
@@ -242,9 +249,8 @@ class CryptoLib
     /**
      * Validate hash by providing the hashed string (e.g. from password field in database) with a plain-text input (e.g. password field from user).
      *
-     * @param $original
-     * @param $input
-     * @param $salt
+     * @param $original - Original hash input.
+     * @param $input - Hash to test against.
      *
      * @return bool
      * @throws \Exception
@@ -253,6 +259,10 @@ class CryptoLib
     {
 
         $originalExploded = \explode('_', $original);
+
+        if (sizeof($originalExploded) !== 2) {
+            throw new \Exception("Invalid hash.");
+        }
 
         $salt = $originalExploded[0];
         $hash = $originalExploded[1];
@@ -295,6 +305,9 @@ class CryptoLib
      */
     public static function encryptData($data, $key)
     {
+        if (empty($data)) {
+            throw new \Exception('Some data is required to encrypt.');
+        }
 
         self::checkMcrypt();
 
@@ -328,6 +341,9 @@ class CryptoLib
      */
     public static function decryptData($data, $key)
     {
+        if (empty($data)) {
+            throw new \Exception('Some data is required to decrypt.');
+        }
 
         self::checkMCrypt();
 
