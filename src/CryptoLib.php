@@ -34,7 +34,7 @@ class CryptoLib
     // Ciphers used, in order of use, if you change this after encryption you will not be able to decrypt, they must support MCRYPT_MODE_CBC:
     public static $mcryptCiphers = array(\MCRYPT_SERPENT, \MCRYPT_TWOFISH, \MCRYPT_RIJNDAEL_256);
 
-    public function changePepper($new)
+    public static function changePepper($new)
     {
 
         if ((empty($new)) || ( ! is_string($new))) {
@@ -55,12 +55,12 @@ class CryptoLib
     private static function pseudoBytes($length = 1)
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
-
+        
         if ($strong === true) {
             return $bytes;
-        } else {
-            throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
         }
+
+        throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
     }
 
     /**
@@ -73,7 +73,6 @@ class CryptoLib
      */
     public static function randomHex($length = 128)
     {
-
         $bytes = \ceil($length / 2);
         $hex   = \bin2hex(self::pseudoBytes($bytes));
 
