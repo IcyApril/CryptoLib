@@ -41,8 +41,8 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $rand = \IcyApril\CryptoLib::randomHex(2);
         $this->assertEquals(2, strlen($rand));
 
-        $rand = \IcyApril\CryptoLib::randomHex(0);
-        $this->assertEquals(0, strlen($rand));
+        $this->setExpectedException(Exception::class);
+        \IcyApril\CryptoLib::randomHex(0);
     }
 
     public function testRandomInt()

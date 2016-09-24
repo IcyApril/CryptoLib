@@ -56,10 +56,10 @@ class CryptoLib
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
 
-        if ($strong === true) {
+        if ($strong == true) {
             return $bytes;
         }
-        
+
         throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
     }
 
@@ -73,6 +73,10 @@ class CryptoLib
      */
     public static function randomHex($length = 128)
     {
+        if ($length < 1) {
+            throw new \Exception("Length must be a positive integer.");
+        }
+
         $bytes = \ceil($length / 2);
         $hex   = \bin2hex(self::pseudoBytes($bytes));
 
