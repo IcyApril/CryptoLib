@@ -55,7 +55,7 @@ class CryptoLib
     private static function pseudoBytes($length = 1)
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
-        
+
         if ($strong === true) {
             return $bytes;
         }
