@@ -1,3 +1,7 @@
+[![Code Climate](https://codeclimate.com/github/IcyApril/CryptoLib/badges/gpa.svg)](https://codeclimate.com/github/IcyApril/CryptoLib)
+[![Issue Count](https://codeclimate.com/github/IcyApril/CryptoLib/badges/issue_count.svg)](https://codeclimate.com/github/IcyApril/CryptoLib)
+[![Build Status](https://travis-ci.org/IcyApril/CryptoLib.svg?branch=master)](https://travis-ci.org/IcyApril/CryptoLib)
+
 #CryptoLib v0.9
 
 CryptoLib: secure, free & open-source PHP cryptography library for everyone. It makes it easy for those who would usually
