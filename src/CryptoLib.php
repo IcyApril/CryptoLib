@@ -202,13 +202,12 @@ class CryptoLib
      *
      * @param $data
      * @param $salt
-     * @param bool $rawOutput
      * @param int $iterations - Recommended to leave at the default of 96, ensure it is divisible by 3 (to get a precise amount of iterations).
      *
      * @return mixed
      * @throws \Exception
      */
-    public static function hash($data, $salt = null, $rawOutput = false, $iterations = 96)
+    public static function hash($data, $salt = null, $iterations = 96)
     {
 
         if (empty($salt) || \is_null($salt)) {
@@ -229,7 +228,7 @@ class CryptoLib
         $peppered  = $hashed . self::$pepper;
         while ($iteration <= $outerIterations) {
 
-            $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0, $rawOutput);
+            $hashed = \hash_pbkdf2($algorithm, $peppered, $salt, $pbkdf2Iteration, 0);
 
             if ($algorithm == "whirlpool") {
                 $algorithm = "sha512";

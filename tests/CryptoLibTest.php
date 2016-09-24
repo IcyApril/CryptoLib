@@ -148,12 +148,12 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $hashB = \IcyApril\CryptoLib::hash("test", "");
         $this->assertNotEquals($hashA, $hashB);
 
-        $hashA = \IcyApril\CryptoLib::hash("test", "salt", false, 96);
-        $hashB = \IcyApril\CryptoLib::hash("test", "salt", false, 100);
+        $hashA = \IcyApril\CryptoLib::hash("test", "salt", 96);
+        $hashB = \IcyApril\CryptoLib::hash("test", "salt", 100);
         $this->assertNotEquals($hashA, $hashB);
 
-        $hashA = \IcyApril\CryptoLib::hash("test", "salt", true, 96);
-        $hashB = \IcyApril\CryptoLib::hash("test", "salt", true, 100);
+        $hashA = \IcyApril\CryptoLib::hash("test", "salt", 96);
+        $hashB = \IcyApril\CryptoLib::hash("test", "salt", 100);
         $this->assertNotEquals($hashA, $hashB);
     }
 
