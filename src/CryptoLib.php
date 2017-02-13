@@ -280,7 +280,7 @@ class CryptoLib
 
         $rehashed = \explode('_', self::hash($input, $salt));
 
-        if ($hash === $rehashed[1]) {
+        if (hash_equals($hash, $rehashed[1])) {
             return true;
         }
 
