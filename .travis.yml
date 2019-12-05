@@ -1,14 +1,16 @@
 language: php
+os: linux
+dist: xenial
 
 php:
     - 7.2
-	- 7.3
+    - 7.3
 
 before_install:
     - composer self-update
-	- echo "extension = <xml>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-	- echo "extension = <mbstring>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-	- echo "extension = <curl>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php/ini
+    - echo "extension = <xml>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo "extension = <mbstring>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+    - echo "extension = <curl>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php/ini
 
 install:
     - travis_retry composer install --no-interaction --prefer-source
