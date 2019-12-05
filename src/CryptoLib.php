@@ -284,11 +284,10 @@ class CryptoLib
         $iv = self::pseudoBytes($ivSize);
         $key = self::hash($key, $salt);
         $key = \hash('sha3-512', $key, true);
-        $cipherText = \openssl_encrypt($data, $cipher, $key, $options=0, $iv);
-        $data = \base64_encode($iv) . "_" . $cipherText;
-        $retval = $salt . "_" . $data;
+        $tag = self::pseudoBytes(16);
+        $cipherText = \openssl_encrypt($data, $cipher, $key, $options=0, $iv, $tag);
 
-        return $retval;
+        return $salt . '_' . \base64_encode($iv) . '_' . $cipherText . '_' . \base64_encode($tag);
     }
 
     /**
@@ -314,13 +313,14 @@ class CryptoLib
         $salt = $explodedData[0];
         $iv = \base64_decode($explodedData[1], true);
         $cipherText = $explodedData[2];
+        $tag = \base64_decode($explodedData[3], true);
 
         unset($explodedData);
 
         $key = self::hash($key, $salt);
         $key = \hash('sha3-512', $key, true);
 
-        $data = \openssl_decrypt($cipherText, $cipher, $key, 0, $iv);
+        $data = \openssl_decrypt($cipherText, $cipher, $key, 0, $iv, $tag);
 
         if ((isset($data)) && (\strlen($data) > 0)) {
             return $data;
