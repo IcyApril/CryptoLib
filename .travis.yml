@@ -10,7 +10,7 @@ before_install:
     - composer self-update
     - echo "extension = <xml>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - echo "extension = <mbstring>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - echo "extension = <curl>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php/ini
+    - echo "extension = <curl>.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 install:
     - travis_retry composer install --no-interaction --prefer-source
