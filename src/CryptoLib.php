@@ -284,7 +284,7 @@ class CryptoLib
         $iv = self::pseudoBytes($ivSize);
         $key = self::hash($key, $salt);
         $key = \hash('sha3-512', $key, true);
-        $cipherText = \openssl_encrypt($data, $ciper, $key, $options=0, $iv);
+        $cipherText = \openssl_encrypt($data, $cipher, $key, $options=0, $iv);
         $data = \base64_encode($iv) . "_" . $cipherText;
         $retval = $salt . "_" . $data;
 
