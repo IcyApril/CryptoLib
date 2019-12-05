@@ -31,14 +31,14 @@ class CryptoLib
     }
 
     /**
-     * Will return openssl_random_pseudo_bytes with desired length is $strong is set to true.
+     * Will return openssl_random_pseudo_bytes with desired length if the server uses 
+     * a cryptographically strong algorithm. Throws an exception otherwise.
      *
      * @param int $length
-     *
-     * @throws \Exception
-     * @returns int $bytes
+     * @return int $bytes
+     * @throws Exception
      */
-    private static function pseudoBytes($length = 1)
+    private static function pseudoBytes(int $length = 1)
     {
         $bytes = \openssl_random_pseudo_bytes($length, $strong);
 
@@ -46,21 +46,24 @@ class CryptoLib
             return $bytes;
         }
 
-        throw new \Exception ('Insecure server! (OpenSSL Random byte generation insecure.)');
+        throw new \Exception (
+            'ERROR: Your server did not use a cryptographically secure algorithm 
+                    to generate a random string. This indicates a broken or old system. 
+                    Because this is insecure, we\'re refusing to work.'
+        );
     }
 
     /**
-     * Random hex generator using pseudoBytes function in this class.
+     * Random hex generator using the pseudoBytes function in this class.
      *
      * @param int $length
-     *
      * @return string
      * @throws \Exception
      */
-    public static function randomHex($length = 128)
+    public static function randomHex(int $length = 128)
     {
         if ($length < 1) {
-            throw new \Exception("Length must be a positive integer.");
+            throw new \Exception('Length must be a positive integer.');
         }
 
         $bytes = \ceil($length / 2);
@@ -70,23 +73,21 @@ class CryptoLib
     }
 
     /**
-     * Random integer generator using pseudoBytes function in this class.
+     * Random integer generator using the pseudoBytes function in this class.
      *
      * @param $min
      * @param $max
-     *
      * @return mixed
      * @throws \Exception
      */
-    public static function randomInt($min, $max)
+    public static function randomInt(int $min, int $max)
     {
-
         if ($max <= $min) {
-            throw new \Exception('Minimum equal or greater than maximum!');
+            throw new \Exception('Minimum must be an integer less than maximum.');
         }
 
         if ($max < 0 || $min < 0) {
-            throw new \Exception('Only positive integers supported for now!');
+            throw new \Exception('Minimum and maximum must both be positive integers.');
         }
 
         $difference = $max - $min;
@@ -102,26 +103,22 @@ class CryptoLib
         ($randDiff > $difference);
 
         return $min + $randDiff;
-
     }
 
     /**
-     * Random string generator using randomInt function in this class.
+     * Random string generator using the randomInt function in this class.
      *
      * @param $length
-     *
      * @return string
      * @throws \Exception
      */
-    public static function randomString($length)
+    public static function randomString(int $length)
     {
         if ($length < 1) {
-            throw new \Exception("String length must be a positive integer.");
+            throw new \Exception('Length must be a positive integer.');
         }
 
-
         $charactersArr = \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0', '9'));
-
         $charactersCount = \count($charactersArr);
         $stringArr       = array();
 
@@ -130,7 +127,6 @@ class CryptoLib
         }
 
         return \implode($stringArr);
-
     }
 
     /**
@@ -139,23 +135,21 @@ class CryptoLib
      * @param null $function - anonymous function
      * @param int $numbers - Amount of numbers to check
      * @param int $checks - How many times to check and the max random number
-     *
-     * @throws \Exception
-     *
      * @return float
+     * @throws \Exception
      */
-    public static function checkRandomNumberRepeatability($function = null, $numbers = 5, $checks = 1000)
+    public static function checkRandomNumberRepeatability(callback $function = null, int $numbers = 5, int $checks = 1000)
     {
         if ($numbers <= 1) {
-            throw new \Exception("Numbers argument is too low.");
+            throw new \Exception('Numbers must be an integer greater than 1.');
         }
 
         if ($checks <= 1) {
-            throw new \Exception("Checks argument is too low.");
+            throw new \Exception('Checks must be an integer greater than 1.');
         }
 
-        if ( ! \is_callable($function) === true) {
-            $function = function ($min, $max) {
+        if (!(\is_callable($function) === true)) {
+            $function = function($min, $max) {
                 return self::randomInt($min, $max);
             };
         }
@@ -163,7 +157,6 @@ class CryptoLib
         $repeats = 0;
 
         for ($check = 0; $check !== $numbers; $check++) {
-
             $$check = $function(0, $checks);
 
             for ($repeat = 0; $repeat !== $checks; $repeat++) {
@@ -171,7 +164,6 @@ class CryptoLib
                     $repeats++;
                 }
             }
-
         }
 
         return $repeats / ($checks * $numbers);
@@ -179,7 +171,7 @@ class CryptoLib
 
 
     /**
-     * Salt generation using classes random string generator (32 charectars).
+     * Salt generation using our random string generator (32 charectars).
      * @return string
      */
     public static function generateSalt()
@@ -188,16 +180,16 @@ class CryptoLib
     }
 
     /**
-     * Hash which will recursively rehash data 64 times (each time being hashed 32 times PBKDF2 standard) alternating between Whirlpool and SHA512.
+     * Hash which will recursively rehash data 64 times (each time being hashed 32 times PBKDF2 standard)
+     * alternating between Whirlpool and SHA512.
      *
      * @param $data
      * @param $salt
      * @param int $iterations - Recommended to leave at the default of 96, ensure it is divisible by 3 (to get a precise amount of iterations).
-     *
      * @return mixed
      * @throws \Exception
      */
-    public static function hash($data, $salt = null, $iterations = 96)
+    public static function hash($data, $salt = null, int $iterations = 96)
     {
 
         if (empty($salt) || \is_null($salt)) {
@@ -205,7 +197,7 @@ class CryptoLib
         }
 
         if ((\in_array("whirlpool", \hash_algos()) && \in_array("sha512", \hash_algos())) !== true) {
-            throw new \Exception ('Your PHP installation does not support Whirlpool or SHA512 hashing.');
+            throw new \Exception ('Your PHP installation does not support Whirlpool and/or SHA512 hashing.');
         }
 
         $outerIterations = \ceil(($iterations / 3) * 2);
@@ -235,26 +227,26 @@ class CryptoLib
 
     private static function flipHashAlgo($algorithm)
     {
-        if ($algorithm == "whirlpool") {
-            return "sha512";
+        if ($algorithm === 'whirlpool') {
+            return 'sha512';
+        } else if ($algorithm === 'sha512') {
+            return 'whirlpool';
         }
 
-        return "whirlpool";
-
+        throw new \Exception ('Something went horribly wrong.');
     }
 
     /**
-     * Validate hash by providing the hashed string (e.g. from password field in database) with a plain-text input (e.g. password field from user).
+     * Validate hash by providing the hashed string (e.g. from password field in database) 
+     * with a plain-text input (e.g. password field from user).
      *
      * @param $original - Original hash input.
      * @param $input - Hash to test against.
-     *
-     * @return bool
      * @throws \Exception
+     * @return bool
      */
     public static function validateHash($original, $input)
     {
-
         $originalExploded = \explode('_', $original);
 
         if (sizeof($originalExploded) !== 2) {
@@ -271,7 +263,6 @@ class CryptoLib
         }
 
         return false;
-
     }
 
     /**
