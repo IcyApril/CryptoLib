@@ -133,7 +133,7 @@ class CryptoLib
      * @return float
      * @throws \Exception
      */
-    public static function checkRandomNumberRepeatability(callback $function = null, int $numbers = 5, int $checks = 1000)
+    public static function checkRandomNumberRepeatability($function = null, int $numbers = 5, int $checks = 1000)
     {
         if ($numbers <= 1) {
             throw new \Exception('Numbers must be an integer greater than 1.');
