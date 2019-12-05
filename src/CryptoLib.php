@@ -13,18 +13,13 @@ namespace IcyApril;
  */
 class CryptoLib
 {
-
     // Please change the pepper below for each project (do not change after data has been hashed using this class).
     private static $pepper = '+?*er*F+AY%vJ,tmwt$e[AzIy|(}(;W7]-Gw}Nazr}iD}--vA}+Jq%+$LCPsP#J#';
 
-    // Ciphers used, in order of use, if you change this after encryption you will not be able to decrypt, they must support MCRYPT_MODE_CBC:
-    public static $mcryptCiphers = array(\MCRYPT_SERPENT, \MCRYPT_TWOFISH, \MCRYPT_RIJNDAEL_256);
-
-    public static function changePepper($new)
+    public static function changePepper(string $new)
     {
-
-        if ((empty($new)) || ( ! is_string($new))) {
-            throw new \Exception("You must set a pepper and it cannot change the pepper to something that isn't a string.");
+        if ((empty($new))) {
+            throw new \Exception('The new pepper value must be a non-null string');
         }
 
         self::$pepper = $new;
@@ -266,56 +261,34 @@ class CryptoLib
     }
 
     /**
-     * Check MCrypt supports the specified ciphers.
-     * @return bool
-     * @throws \Exception
-     */
-    protected static function checkMCrypt()
-    {
-        foreach (self::$mcryptCiphers as $cipher) {
-            $ivSize = \mcrypt_get_iv_size($cipher, \MCRYPT_MODE_CBC);
-            if ( ! ($ivSize % 16) && ! ($ivSize > 0)) {
-                throw new \Exception ('Your MCrypt version is too old and does not support the Rijndael, Serpant or Twofish ciphers (or the MCrypt ciphers have been changed).');
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Encrypt data using a specified key; uses cascading layered encryption with hash salting.
      *
      * @param $data
      * @param $key
-     *
      * @return string
      * @throws \Exception
      */
-    public static function encryptData($data, $key)
+    public static function encryptData($data, string $key)
     {
         if (empty($data)) {
             throw new \Exception('Some data is required to encrypt.');
         }
-
-        self::checkMcrypt();
-
-        $salt = self::generateSalt();
-
-        foreach (self::$mcryptCiphers as $cipher) {
-
-            $ivSize     = \mcrypt_get_iv_size($cipher, \MCRYPT_MODE_CBC);
-            $iv         = \mcrypt_create_iv($ivSize, \MCRYPT_RAND);
-            $key        = self::hash($key, $salt);
-            $key        = \hash('SHA256', $key, true);
-            $cipherText = \mcrypt_encrypt($cipher, $key, $data, \MCRYPT_MODE_CBC, $iv);
-            $data       = \base64_encode($iv) . "_" . \base64_encode($cipherText);
-
+        if ($key === null) {
+            throw new \Exception('Key cannot be null.');
         }
 
-        $return = $salt . "_" . $data;
+        $salt = self::generateSalt();
+        $cipher = 'aes-256-gcm';
 
-        return $return;
+        $ivSize = \openssl_cipher_iv_length($cipher);
+        $iv = self::pseudoBytes($ivSize);
+        $key = self::hash($key, $salt);
+        $key = \hash('sha3-512', $key, true);
+        $cipherText = \openssl_encrypt($data, $ciper, $key, $options=0, $iv);
+        $data = \base64_encode($iv) . "_" . $cipherText;
+        $retval = $salt . "_" . $data;
 
+        return $retval;
     }
 
     /**
@@ -323,58 +296,36 @@ class CryptoLib
      *
      * @param $data
      * @param $key
-     *
      * @return string
      * @throws \Exception
      */
-    public static function decryptData($data, $key)
+    public static function decryptData($data, string $key)
     {
         if (empty($data)) {
             throw new \Exception('Some data is required to decrypt.');
         }
+        if ($key === null) {
+            throw new \Exception('Key cannot be null.');
+        }
 
-        self::checkMCrypt();
-
-        $cipherCount  = \count(self::$mcryptCiphers);
         $explodedData = \explode('_', $data);
+        $cipher = 'aes-256-gcm';
 
         $salt = $explodedData[0];
-        \array_shift($explodedData);
+        $iv = \base64_decode($explodedData[1], true);
+        $cipherText = $explodedData[2];
 
-        $data = \implode('_', $explodedData);
         unset($explodedData);
 
-        $hashes = array();
+        $key = self::hash($key, $salt);
+        $key = \hash('sha3-512', $key, true);
 
-        for ($hash = 1; $hash <= $cipherCount; $hash++) {
-
-            $key = self::hash($key, $salt);
-            $key = \hash('SHA256', $key, true);
-            \array_unshift($hashes, $key);
-
-        }
-
-        $mcryptCiphersInv = \array_reverse(self::$mcryptCiphers);
-
-        foreach ($mcryptCiphersInv as $num => $cipher) {
-
-            $explodedData = \explode('_', $data);
-            $data         = \mcrypt_decrypt($cipher, $hashes[$num], \base64_decode($explodedData[1]), \MCRYPT_MODE_CBC,
-                \base64_decode($explodedData[0]));
-            $data         = \rtrim($data, "\0");
-
-            unset($explodedData);
-
-        }
+        $data = \openssl_decrypt($cipherText, $cipher, $key, 0, $iv);
 
         if ((isset($data)) && (\strlen($data) > 0)) {
             return $data;
         }
 
         throw new \Exception('Decryption failed (likely incorrect password).');
-
-
     }
-
-
 }
