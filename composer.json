@@ -3,7 +3,7 @@
   "description": "CryptoLib: secure, free & open-source PHP cryptography library for everyone.",
   "license": "AGPL",
   "homepage": "https://cryptolib.ju.je",
-  "version": "2.0.0-dev",
+  "version": "2.0.0",
   "authors": [
     {
       "name": "Junade Ali",
@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "php": ">5.5.0"
+    "php": ">7.1.0"
   },
   "autoload": {
     "psr-4": {
