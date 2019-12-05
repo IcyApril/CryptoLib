@@ -1,30 +1,16 @@
 <?php
 namespace IcyApril;
 
-    /**
-     * Class CryptoLib (v0.8 Christmas)
-     * Created by Junade Ali
-     * Requires OpenSSL, MCrypt > 2.4.x, PHP 5.3.0+
-     */
-
-/*
-    CryptoLib is an open-source PHP Cryptography library.
-    Copyright (C) 2014  Junade Ali
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * CryptoLib
+ * 
+ * An open-source PHP Cryptography library, originally by Junade Ali <junade@cloudflare.com>.
+ * 
+ * @author Junade Ali
+ * @author Damir Mitrovic (v2.0.0)
+ * @version 2.0.0
+ * @license AGPL
  */
-
 class CryptoLib
 {
 
