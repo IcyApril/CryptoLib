@@ -2,7 +2,7 @@
 namespace IcyApril;
 
 /**
- * CryptoLib
+ * CryptoLib (v2.0 Calescence)
  * 
  * An open-source PHP Cryptography library, originally by Junade Ali <junade@cloudflare.com>.
  * 

@@ -2,7 +2,7 @@
 [![Code Climate](https://codeclimate.com/github/IcyApril/CryptoLib/badges/gpa.svg)](https://codeclimate.com/github/IcyApril/CryptoLib)
 [![Issue Count](https://codeclimate.com/github/IcyApril/CryptoLib/badges/issue_count.svg)](https://codeclimate.com/github/IcyApril/CryptoLib)
 
-#CryptoLib v1
+#CryptoLib v2
 
 CryptoLib: secure, free & open-source PHP cryptography library for everyone. It makes it easy for those who would usually
 implement incredibly weak cryptography to include secure cryptographic functions to secure passwords, data and generate
@@ -13,8 +13,7 @@ CryptoLib boasts:
 - Salted PBKDF2 hashing using alternations between SHA512 and Whirlpool
 - Two-way cascading encryption using Rijndael 256, Twofish and Serpent
 
-CryptoLib requires PHP 5.6.0+ (with OpenSSL and MCrypt version 2.4.x or greater). You should always keep your Cryptography plugins
-up-to-date.
+CryptoLib requires PHP 7.2.0+ (with OpenSSL). You should always keep your Cryptography plugins up-to-date.
 
 Check out the documentation at: http://cryptolib.ju.je
 
@@ -50,7 +49,8 @@ $valid = \IcyApril\CryptoLib::validateHash($hash, "test");
 
 - v0.8 Christmas - Initial version, released on Christmas day 2014.
 - v0.9 Converging - Documentation updates, released 28th December 2014.
-- v1.0 Conqueror - Finally getting around to marking this as v1. 
+- v1.0 Conqueror - Finally getting around to marking this as v1.
+- v2.0 Calescence - Replaced mcrypt with openssl.
 
 ## Warning
 
