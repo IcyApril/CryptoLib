@@ -1,11 +1,9 @@
 <?php
 
-/**
- * User: junade
- * Date: 23/09/2016
- * Time: 18:03
- */
-class CryptoLibTest extends PHPUnit_Framework_TestCase
+use IcyApril\CryptoLib;
+use PHPUnit\Framework\TestCase;
+
+class CryptoLibTest extends TestCase
 {
     public function testChangePepper()
     {
@@ -41,7 +39,7 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $rand = \IcyApril\CryptoLib::randomHex(2);
         $this->assertEquals(2, strlen($rand));
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomHex(0);
     }
 
@@ -59,13 +57,13 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $randRange = $randB >= 0 && $randB <= 100;
         $this->assertTrue($randRange);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomInt(0, 0);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomInt(-10, -1);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomInt(-10, 0);
     }
 
@@ -77,10 +75,10 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $rand = \IcyApril\CryptoLib::randomString(1);
         $this->assertEquals(1, strlen($rand));
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomString(0);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::randomString(-10);
     }
 
@@ -112,13 +110,13 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         );
         $this->assertEquals(0, $repeatability);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::checkRandomNumberRepeatability(null, 1, 100);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::checkRandomNumberRepeatability(null, 1, 1);
 
-        $this->setExpectedException(Exception::class);
+        $this->expectException(Exception::class);
         \IcyApril\CryptoLib::checkRandomNumberRepeatability(null, 5, 1);
     }
 
@@ -163,7 +161,7 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $valid = \IcyApril\CryptoLib::validateHash($hash, "test");
         $this->assertTrue($valid);
 
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $hash = \IcyApril\CryptoLib::hash("test");
         \IcyApril\CryptoLib::validateHash("test", $hash);
     }
@@ -176,7 +174,7 @@ class CryptoLibTest extends PHPUnit_Framework_TestCase
         $dec = \IcyApril\CryptoLib::decryptData($enc, "test key");
         $this->assertEquals("test data", $dec);
 
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         \IcyApril\CryptoLib::encryptData("", "test key");
     }
 }
